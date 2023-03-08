@@ -21,11 +21,22 @@ export const TravelList = ({
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   const onClickShowModal = (travelProduct: TravelProduct) => {
-    console.log(travelProduct);
     onOpen();
   };
 
-  const onClickReservation = () => {};
+  const onClickReservation = (travelProduct: TravelProduct) => {
+    const basket = JSON.parse(localStorage.getItem("basket") || "[]");
+    const basketTemp = basket.filter(
+      (product: TravelProduct) => travelProduct.idx === product.idx
+    );
+    if (basketTemp.length === 1) {
+      alert("이미 장바구니에 담긴 상품입니다.");
+      return;
+    }
+    const { ...newItem } = travelProduct;
+    basket.push(newItem);
+    localStorage.setItem("basket", JSON.stringify(basket));
+  };
 
   return (
     <>
@@ -56,7 +67,7 @@ export const TravelList = ({
             variant="solid"
             colorScheme="blue"
             cursor="pointer"
-            onClick={() => onClickReservation()}
+            onClick={() => onClickReservation(travelProduct)}
           >
             예약하기
           </Button>
